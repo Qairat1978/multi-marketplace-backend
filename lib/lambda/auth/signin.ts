@@ -58,23 +58,32 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
     const auth = response.AuthenticationResult;
 
+    /// ❗ ЕГЕР TOKEN ЖОҚ БОЛСА
+    if (!auth || !auth.AccessToken) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({
+          message: "Authentication failed",
+        }),
+      };
+    }
+
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-
-        // ACCESS TOKEN HEADER
-        "Authorization": `Bearer ${auth?.AccessToken}`,
-
-        // OPTIONAL HEADERS
-        "X-Id-Token": auth?.IdToken ?? "",
-        "X-Refresh-Token": auth?.RefreshToken ?? "",
       },
       body: JSON.stringify({
         message: "User signed in successfully",
-        expiresIn: auth?.ExpiresIn ?? null,
-        tokenType: auth?.TokenType ?? null,
+
+        /// 🔥 MAIN FIX
+        accessToken: auth.AccessToken,
+        refreshToken: auth.RefreshToken,
+        idToken: auth.IdToken,
+
+        expiresIn: auth.ExpiresIn,
+        tokenType: auth.TokenType,
       }),
     };
 

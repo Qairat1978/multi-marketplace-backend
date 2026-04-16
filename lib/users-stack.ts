@@ -137,7 +137,7 @@ export class UsersStack extends cdk.Stack {
     env: Record<string, string> = {}
   ) {
     return new nodejs.NodejsFunction(this, name, {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       entry: path.join(__dirname, `lambda/auth/${file}`),
       handler: "handler",
       environment: env,
